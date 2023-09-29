@@ -1,52 +1,72 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+
+  static _MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>()!;
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      home: Home(),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(),
+      darkTheme: ThemeData.dark(),
+      themeMode: _themeMode,
+      home: MyHomePage(title: 'Theme'),
     );
+  }
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
   }
 }
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class MyHomePage extends StatelessWidget {
+  final String title;
+
+  MyHomePage({required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          leading: Icon(CupertinoIcons.home),
-          trailing:
-              CupertinoSwitch(value: true, onChanged: (bool onChanged) {}),
-          middle: Text("Home"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Choose your theme:',
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () =>
+                        MyApp.of(context).changeTheme(ThemeMode.light),
+                    child: Text('Light')),
+                ElevatedButton(
+                    onPressed: () =>
+                        MyApp.of(context).changeTheme(ThemeMode.dark),
+                    child: Text('Dark')),
+              ],
+            ),
+          ],
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Hello World!'),
-              Text('Hello World!'),
-              Text('Hello World!'),
-              Text('Hello World!'),
-              CupertinoButton.filled(child: Text('Hi'), onPressed: () {}),
-              CupertinoTextField(),
-              CupertinoTabBar(items: [
-                BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.info), label: '1'),
-                BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.info), label: '2'),
-                BottomNavigationBarItem(
-                    icon: Icon(CupertinoIcons.info), label: '3'),
-              ]),
-            ],
-          ),
-        ));
+      ),
+    );
   }
 }
